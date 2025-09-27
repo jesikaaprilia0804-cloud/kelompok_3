@@ -1,49 +1,23 @@
-print('='*75)
-print("Halo semuanya selamat datang di Program kami dari Kelompok 3")
-print("Program ini dibuat untuk membantu mengelola data obat di apotek")
-print('='*75)
+print("="*60)
+print("   Program Pengelolaan Data Apotek - Kelompok 3")
+print("="*60)
 
-class Apotik:
-    def __init__(self, nama_apotik, alamat):
-        self.nama_apotik = nama_apotik
-        self.alamat = alamat
-
-class Obat(Apotik):
-    def __init__(self, nama_obat, fungsi_obat):
-        self.nama_obat = nama_obat
-        self.fungsi_obat = fungsi_obat
-
-class Pasien(Apotik):
-    def __init__(self, nama, umur, jenis_k, alamat_pasien, keluhan, diagnosa, obat_dibeli):
-        self.nama = nama
-        self.umur = umur
-        self.jenis_k = jenis_k
-        self.alamat_pasien = alamat_pasien
-        self.keluhan = keluhan
-        self.diagnosa = diagnosa
-        self.obat_dibeli = obat_dibeli
-
-class Administrasi(Apotik):
-    def __init__(self, total_harga, kembalian):
-        self.total_harga = total_harga
-        self.kembalian = kembalian
-
-# Daftar obat dan fungsinya
+# Daftar obat, fungsi, dan harga
 obat = {
-    "Paracetamol" : "Mengurangi rasa sakit kepala, dan meredakan demam",
-    "Ibuprofen" : "Pereda nyeri dan penurun demam",
-    "Maltofer" : "Mengatasi kekurangan zat besi",
-    "Folarin" : "Suplemen Asam Folat",
-    "Chlorpheniramine" : "Meredakan alergi dan flu",
-    "Antasida Doen" : "Meredakan gejala asam lambung berlebih",
-    "Lopamid" : "Mengobati masalah diare",
-    "Antimo" : "Mengatasi dan mencegah mual",
-    "Cataflam" : "Mengatasi nyeri sendi akibat asam urat",
-    "Coxavit" : "Suplemen multivitamin untuk memelihara daya tubuh",
-    "Methylprednisolone" : "Mengurangi peradangan tenggorokan"
+    "Paracetamol": ("Mengurangi sakit kepala/demam", 5000),
+    "Ibuprofen": ("Pereda nyeri & demam", 7000),
+    "Maltofer": ("Mengatasi kekurangan zat besi", 10000),
+    "Folarin": ("Suplemen Asam Folat", 8000),
+    "Chlorpheniramine": ("Meredakan alergi/flu", 6000),
+    "Antasida Doen": ("Meredakan asam lambung", 5000),
+    "Lopamid": ("Mengobati diare", 7000),
+    "Antimo": ("Mencegah mual & mabuk", 4000),
+    "Cataflam": ("Mengatasi nyeri sendi/asam urat", 9000),
+    "Coxavit": ("Suplemen multivitamin", 12000),
+    "Methylprednisolone": ("Mengurangi radang tenggorokan", 11000)
 }
 
-# Mapping keluhan -> obat
+# Keluhan → Obat
 diagnosa_obat = {
     "sakit kepala": "Paracetamol",
     "demam": "Paracetamol",
@@ -66,34 +40,69 @@ diagnosa_obat = {
     "menjaga imun tubuh": "Coxavit"
 }
 
-# Input pasien
-nama = str(input("Silahkan masukkan nama pasien : ")).title()
-umur = int(input("Silahkan masukkan umur pasien : "))
-jk = str(input("Silahkan masukkan jenis kelamin pasien : ")).lower()
-alamat_pasien = str(input("Silahkan masukkan alamat pasien : ")).title()
+# Riwayat pasien
+riwayat = []
 
-print("\nDaftar diagnosa yang tersedia:")
-for d in diagnosa_obat.keys():
-    print("-", d.title())
+while True:
+    print("\n=== INPUT DATA PASIEN ===")
+    nama = input("Nama pasien : ").title()
+    umur = int(input("Umur pasien : "))
+    jk = input("Jenis kelamin : ").title()
+    alamat = input("Alamat pasien : ").title()
 
-keluhan = str(input("\nSilahkan masukkan keluhan pasien (sesuai daftar): ")).lower()
+    print("\nDaftar diagnosa yang tersedia:")
+    for d in diagnosa_obat.keys():
+        print("-", d.title())
 
-# Proses diagnosa
-if keluhan in diagnosa_obat:
-    nama_obat = diagnosa_obat[keluhan]
-    fungsi = obat.get(nama_obat, "Fungsi obat tidak ditemukan")
+    keluhan_list = []
+    obat_list = []
+    total_harga = 0
 
-    # buat object pasien
-    pasien = Pasien(nama, umur, jk, alamat_pasien, keluhan, keluhan, nama_obat)
+    for i in range(3):  # Maksimal 3 keluhan
+        keluhan = input(f"\nMasukkan keluhan {i+1} (atau tekan Enter jika selesai): ").lower()
+        if keluhan == "":  
+            break
+        if keluhan in diagnosa_obat:
+            nama_obat = diagnosa_obat[keluhan]
+            fungsi, harga = obat[nama_obat]
+            keluhan_list.append(keluhan)
+            obat_list.append((nama_obat, fungsi, harga))
+            total_harga += harga
+        else:
+            print("❌ Keluhan tidak ditemukan.")
 
-    print("\n=== DATA PASIEN ===")
-    print(f"Nama     : {pasien.nama}")
-    print(f"Umur     : {pasien.umur}")
-    print(f"JK       : {pasien.jenis_k}")
-    print(f"Alamat   : {pasien.alamat_pasien}")
-    print(f"Keluhan  : {pasien.keluhan}")
     print("\n=== HASIL DIAGNOSA ===")
-    print(f"Obat diresepkan : {pasien.obat_dibeli}")
-    print(f"Fungsi obat     : {fungsi}")
-else:
-    print("Keluhan tidak ada di daftar diagnosa, silakan konsultasi lebih lanjut.")
+    for o in obat_list:
+        print(f"Obat : {o[0]} | Fungsi : {o[1]} | Harga : Rp{o[2]}")
+    print(f"Total harga : Rp{total_harga}")
+
+    # Input uang
+    bayar = int(input("Masukkan jumlah uang pasien : Rp"))
+    if bayar >= total_harga:
+        kembalian = bayar - total_harga
+        print(f"✅ Pembayaran berhasil, kembalian : Rp{kembalian}")
+    else:
+        print("❌ Uang tidak cukup!")
+        kembalian = 0
+
+    # Simpan ke riwayat
+    riwayat.append({
+        "nama": nama,
+        "umur": umur,
+        "jk": jk,
+        "alamat": alamat,
+        "keluhan": keluhan_list,
+        "obat": [o[0] for o in obat_list],
+        "total": total_harga,
+        "bayar": bayar,
+        "kembalian": kembalian
+    })
+
+    ulang = input("\nTambah pasien lagi? (y/n): ").lower()
+    if ulang != "y":
+        break
+
+# Tampilkan riwayat
+print("\n=== RIWAYAT PASIEN ===")
+for r in riwayat:
+    print(f"{r['nama']} | Keluhan: {', '.join(r['keluhan'])} | Obat: {', '.join(r['obat'])} | Total: Rp{r['total']}")
